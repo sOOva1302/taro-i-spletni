@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Таро AI — умный помощник таролога</title>
+    <title>Таро и сплетни</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b0813">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Таро AI">
+    <meta name="apple-mobile-web-app-title" content="Таро и сплетни">
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,15 +17,15 @@
 
     <div class="app">
         <div class="header">
-            <span class="logo-icon">🔮</span>
-            <h1>Tarot AI</h1>
-            <p class="subtitle">профессиональный помощник таролога</p>
+            <span class="logo-icon">🌙</span>
+            <h1>Таро и сплетни</h1>
+            <p class="subtitle">карты знают — мы обсудим</p>
         </div>
 
         <div class="section">
-            <div class="section-label"><span class="num">1</span> Вопрос</div>
-            <textarea id="questionText" placeholder="Нажмите сюда и используйте микрофон на клавиатуре..."></textarea>
-            <p class="hint">💡 Нажмите на поле выше, затем на микрофон 🎤 на клавиатуре телефона</p>
+            <div class="section-label"><span class="num">1</span> Твой вопрос</div>
+            <textarea id="questionText" placeholder="Напиши свой вопрос или нажми на микрофон на клавиатуре..."></textarea>
+            <p class="hint">💬 Можно написать текстом или надиктовать голосом — нажми на микрофон 🎤 на клавиатуре</p>
         </div>
 
         <div class="section">
@@ -45,20 +45,25 @@
             </div>
         </div>
 
-        <button class="btn-interpret" id="interpretBtn">✨ Получить толкование</button>
+        <button class="btn-interpret" id="interpretBtn">✨ Разложить карты</button>
 
         <div class="loading" id="loading" style="display:none">
             <div class="spinner"></div>
-            <p>Анализируем карты...</p>
+            <p>Смотрю на карты...</p>
         </div>
 
         <div class="result" id="result" style="display:none">
-            <h3>✨ Толкование</h3>
+            <h3>✨ Твой расклад</h3>
             <div class="result-text" id="resultText"></div>
         </div>
 
         <div class="history" id="history"></div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="app.js"></script>
