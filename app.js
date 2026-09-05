@@ -139,37 +139,6 @@ function handlePhotoInput(event) {
     reader.readAsDataURL(file);
 }
 
-// === Поиск похожих раскладов ===
-function findRelatedReadings(currentQuestion) {
-    if (!currentQuestion || historyData.length === 0) return [];
-    
-    const keywords = currentQuestion.toLowerCase().split(' ');
-    const related = [];
-    
-    historyData.forEach((item, index) => {
-        const pastQuestion = (item.question || '').toLowerCase();
-        let matchScore = 0;
-        
-        keywords.forEach(word => {
-            if (word.length > 3 && pastQuestion.includes(word)) {
-                matchScore++;
-            }
-        });
-        
-        if (matchScore > 0) {
-            related.push({
-                index,
-                question: item.question,
-                interpretation: item.interpretation,
-                date: item.date,
-                score: matchScore
-            });
-        }
-    });
-    
-    return related.sort((a, b) => b.score - a.score).slice(0, 3);
-}
-
 // === Получение толкования ===
 async function getInterpretation() {
     const question = document.getElementById('questionText').value.trim();
@@ -187,10 +156,9 @@ async function getInterpretation() {
     result.style.display = 'none';
 
     try {
-        const relatedReadings = findRelatedReadings(question);
         const cardCount = determineCardCount(question);
         const drawnCards = cardCount > 0 ? drawRandomCards(cardCount) : null;
-        const interpretation = await getAITarotReading(question, photoData, relatedReadings, drawnCards);
+        const interpretation = await getAITarotReading(question, photoData, drawnCards);
         document.getElementById('resultText').innerHTML = marked.parse(interpretation);
         loading.style.display = 'none';
         result.style.display = 'block';
@@ -205,19 +173,7 @@ async function getInterpretation() {
 }
 
 // === Запрос к VseGPT ===
-async function getAITarotReading(question, photoData, relatedReadings = [], drawnCards = null) {
-    const contextInfo = relatedReadings.length > 0 ? `
-ПРОШЛЫЕ РАСКЛАДЫ:
-
-${relatedReadings.map((r, i) => `
-${r.date}:
-Вопрос: "${r.question}"
-Что тогда было: "${r.interpretation.substring(0, 500)}..."
-`).join('\n')}
-
-Ты помнишь эти разговоры. Если нынешний вопрос перекликается с прошлыми — отметь это как подруга: "Помнишь, мы уже говорили об этом..."
-` : '';
-
+async function getAITarotReading(question, photoData, drawnCards = null) {
     const cardsInfo = drawnCards ? `
 Подруга хочет вытянуть карты сама, но карт у неё нет. Ты уже вытянула для неё ${drawnCards.length} карт. Вот что выпало (в порядке вытягивания):
 
@@ -231,8 +187,6 @@ ${drawnCards.map((card, index) => `${index + 1}. ${card.name} (${card.position})
 Ты общаешься легко, тепло, по-дружески. Без пафоса, без "пророчеств". Как будто вы вместе смотрите на карты и обсуждаете, что они хотят сказать.
 
 Её вопрос: "${question || 'Вопрос не указан'}"
-
-${contextInfo}
 
 ${photoData ? 'Она сфотографировала расклад. Посмотри внимательно на карты.' : cardsInfo}
 
@@ -338,7 +292,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
                     content: content
                 }
             ],
-            max_tokens: 4000,
+            max_tokens: 3000,
             temperature: 0.9
         })
     });
