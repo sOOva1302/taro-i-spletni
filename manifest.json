@@ -2,7 +2,7 @@
     "name": "Таро и сплетни",
     "short_name": "Таро и сплетни",
     "description": "Карты знают — мы обсудим",
-    "start_url": "/tarot-ai/",
+    "start_url": "/taro-i-spletni/",
     "display": "standalone",
     "background_color": "#0b0813",
     "theme_color": "#0b0813",
