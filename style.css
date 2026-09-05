@@ -226,6 +226,37 @@ textarea:focus {
     display: block;
 }
 
+.cards-count-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.count-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Manrope', sans-serif;
+}
+
+.count-btn:hover {
+    border-color: var(--violet);
+    background: var(--bg-card-hover);
+}
+
+.count-btn.active {
+    background: var(--gradient);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+}
+
 .btn-interpret {
     width: 100%;
     padding: 18px;
@@ -465,6 +496,10 @@ textarea:focus {
     .history-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 8px;
+    }
+    .cards-count-selector {
+        grid-template-columns: repeat(4, 1fr);
         gap: 8px;
     }
 }
