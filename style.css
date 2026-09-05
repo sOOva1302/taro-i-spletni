@@ -127,12 +127,17 @@ h1 {
     text-align: center;
 }
 
+.question-wrapper {
+    position: relative;
+}
+
 textarea {
     width: 100%;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 16px;
+    padding-right: 45px;
     color: var(--text);
     font-size: 14px;
     font-family: 'Manrope', sans-serif;
@@ -149,6 +154,30 @@ textarea:focus {
     outline: none;
     border-color: var(--violet);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.clear-question-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(232, 121, 169, 0.1);
+    border: 1px solid rgba(232, 121, 169, 0.3);
+    color: var(--pink);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.clear-question-btn:hover {
+    background: rgba(232, 121, 169, 0.2);
+    border-color: var(--pink);
 }
 
 .photo-upload {
