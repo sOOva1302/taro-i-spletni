@@ -43,9 +43,21 @@
                     <p>Выбрать из галереи</p>
                 </div>
             </div>
+            <p class="hint">Если своих карт нет — приложение само вытянет их для тебя</p>
             <div class="photo-preview" id="photoPreview" style="display:none">
                 <img id="photoImg" src="" alt="Фото расклада">
             </div>
+        </div>
+
+        <div class="section" id="cardsCountSection">
+            <div class="section-label"><span class="num">3</span> Сколько карт тянем?</div>
+            <div class="cards-count-selector">
+                <button class="count-btn active" data-count="1" onclick="selectCardCount(1)">1</button>
+                <button class="count-btn" data-count="3" onclick="selectCardCount(3)">3</button>
+                <button class="count-btn" data-count="5" onclick="selectCardCount(5)">5</button>
+                <button class="count-btn" data-count="7" onclick="selectCardCount(7)">7</button>
+            </div>
+            <p class="hint">💫 1 карта — карта дня или быстрый ответ. Больше — глубже расклад.</p>
         </div>
 
         <button class="btn-interpret" id="interpretBtn">✨ Разложить карты</button>
@@ -62,11 +74,6 @@
 
         <div class="history" id="history"></div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="app.js"></script>
