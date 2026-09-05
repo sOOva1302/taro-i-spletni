@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таро AI — умный помощник таролога</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b0813">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Таро AI">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app">
+        <div class="header">
+            <span class="logo-icon">🔮</span>
+            <h1>Tarot AI</h1>
+            <p class="subtitle">профессиональный помощник таролога</p>
+        </div>
+
+        <div class="section">
+            <div class="section-label"><span class="num">1</span> Вопрос</div>
+            <textarea id="questionText" placeholder="Нажмите сюда и используйте микрофон на клавиатуре..."></textarea>
+            <p class="hint">💡 Нажмите на поле выше, затем на микрофон 🎤 на клавиатуре телефона</p>
+        </div>
+
+        <div class="section">
+            <div class="section-label"><span class="num">2</span> Фото расклада</div>
+            <div class="photo-upload">
+                <div class="photo-btn" id="cameraBtn">
+                    <span class="icon">📷</span>
+                    <p>Сделать фото</p>
+                </div>
+                <div class="photo-btn" id="galleryBtn">
+                    <span class="icon">🖼</span>
+                    <p>Выбрать из галереи</p>
+                </div>
+            </div>
+            <div class="photo-preview" id="photoPreview" style="display:none">
+                <img id="photoImg" src="" alt="Фото расклада">
+            </div>
+        </div>
+
+        <button class="btn-interpret" id="interpretBtn">✨ Получить толкование</button>
+
+        <div class="loading" id="loading" style="display:none">
+            <div class="spinner"></div>
+            <p>Анализируем карты...</p>
+        </div>
+
+        <div class="result" id="result" style="display:none">
+            <h3>✨ Толкование</h3>
+            <div class="result-text" id="resultText"></div>
+        </div>
+
+        <div class="history" id="history"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

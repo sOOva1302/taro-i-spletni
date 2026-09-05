@@ -1,0 +1,16 @@
+{
+    "name": "Таро AI",
+    "short_name": "Таро AI",
+    "description": "Профессиональный помощник таролога",
+    "start_url": "/tarot-ai/",
+    "display": "standalone",
+    "background_color": "#0b0813",
+    "theme_color": "#0b0813",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
