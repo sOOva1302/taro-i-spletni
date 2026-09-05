@@ -2,28 +2,23 @@ const VSEGPT_API_KEY = 'sk-or-vv-4ed1df7d0cc5ad2bfc3bc646367c3440b724e9d8d8b7d6d
 
 let photoData = null;
 let historyData = JSON.parse(localStorage.getItem('tarotHistory') || '[]');
-let selectedCardCount = 1;
+let selectedCardCount = 'auto';
 
 // Колода Таро
 const tarotDeck = [
-    // Старшие Арканы
     'Шут', 'Маг', 'Верховная Жрица', 'Императрица', 'Император',
     'Иерофант', 'Влюблённые', 'Колесница', 'Сила', 'Отшельник',
     'Колесо Фортуны', 'Справедливость', 'Повешенный', 'Смерть', 'Умеренность',
     'Дьявол', 'Башня', 'Звезда', 'Луна', 'Солнце', 'Суд', 'Мир',
-    // Младшие Арканы — Жезлы
     'Туз Жезлов', 'Двойка Жезлов', 'Тройка Жезлов', 'Четвёрка Жезлов', 'Пятёрка Жезлов',
     'Шестёрка Жезлов', 'Семёрка Жезлов', 'Восьмёрка Жезлов', 'Девятка Жезлов', 'Десятка Жезлов',
     'Паж Жезлов', 'Рыцарь Жезлов', 'Королева Жезлов', 'Король Жезлов',
-    // Младшие Арканы — Кубки
     'Туз Кубков', 'Двойка Кубков', 'Тройка Кубков', 'Четвёрка Кубков', 'Пятёрка Кубков',
     'Шестёрка Кубков', 'Семёрка Кубков', 'Восьмёрка Кубков', 'Девятка Кубков', 'Десятка Кубков',
     'Паж Кубков', 'Рыцарь Кубков', 'Королева Кубков', 'Король Кубков',
-    // Младшие Арканы — Мечи
     'Туз Мечей', 'Двойка Мечей', 'Тройка Мечей', 'Четвёрка Мечей', 'Пятёрка Мечей',
     'Шестёрка Мечей', 'Семёрка Мечей', 'Восьмёрка Мечей', 'Девятка Мечей', 'Десятка Мечей',
     'Паж Мечей', 'Рыцарь Мечей', 'Королева Мечей', 'Король Мечей',
-    // Младшие Арканы — Пентакли
     'Туз Пентаклей', 'Двойка Пентаклей', 'Тройка Пентаклей', 'Четвёрка Пентаклей', 'Пятёрка Пентаклей',
     'Шестёрка Пентаклей', 'Семёрка Пентаклей', 'Восьмёрка Пентаклей', 'Девятка Пентаклей', 'Десятка Пентаклей',
     'Паж Пентаклей', 'Рыцарь Пентаклей', 'Королева Пентаклей', 'Король Пентаклей'
@@ -47,22 +42,25 @@ const knownSpreads = {
     'карта дня': 1
 };
 
-// Функция для определения количества карт
+// Определение количества карт
 function determineCardCount(question) {
     if (photoData) return 0;
     
     const lowerQuestion = question.toLowerCase();
     
-    for (const [spreadName, cardCount] of Object.entries(knownSpreads)) {
-        if (lowerQuestion.includes(spreadName)) {
-            return cardCount;
+    if (selectedCardCount === 'auto') {
+        for (const [spreadName, cardCount] of Object.entries(knownSpreads)) {
+            if (lowerQuestion.includes(spreadName)) {
+                return cardCount;
+            }
         }
+        return 1;
     }
     
     return selectedCardCount;
 }
 
-// Функция для вытягивания случайных карт
+// Вытягивание случайных карт
 function drawRandomCards(count) {
     const drawnCards = [];
     const deckCopy = [...tarotDeck];
@@ -84,13 +82,12 @@ function drawRandomCards(count) {
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     renderHistory();
-    
     document.getElementById('cameraBtn').addEventListener('click', openCamera);
     document.getElementById('galleryBtn').addEventListener('click', openGallery);
     document.getElementById('interpretBtn').addEventListener('click', getInterpretation);
 });
 
-// === Выбор количества карт ===
+// Выбор количества карт
 function selectCardCount(count) {
     selectedCardCount = count;
     
@@ -98,16 +95,20 @@ function selectCardCount(count) {
         btn.classList.remove('active');
     });
     
-    document.querySelector(`.count-btn[data-count="${count}"]`).classList.add('active');
+    const selector = count === 'auto' 
+        ? '.count-btn[data-count="auto"]'
+        : `.count-btn[data-count="${count}"]`;
+    
+    document.querySelector(selector).classList.add('active');
 }
 
-// === Очистить поле вопроса ===
+// Очистить поле вопроса
 function clearQuestion() {
     document.getElementById('questionText').value = '';
     document.getElementById('questionText').focus();
 }
 
-// === Открыть камеру ===
+// Открыть камеру
 function openCamera() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -117,7 +118,7 @@ function openCamera() {
     input.click();
 }
 
-// === Открыть галерею ===
+// Открыть галерею
 function openGallery() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -126,7 +127,7 @@ function openGallery() {
     input.click();
 }
 
-// === Обработка фото ===
+// Обработка фото
 function handlePhotoInput(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -139,7 +140,7 @@ function handlePhotoInput(event) {
     reader.readAsDataURL(file);
 }
 
-// === Получение толкования ===
+// Получение толкования
 async function getInterpretation() {
     const question = document.getElementById('questionText').value.trim();
     const btn = document.getElementById('interpretBtn');
@@ -172,7 +173,7 @@ async function getInterpretation() {
     btn.disabled = false;
 }
 
-// === Запрос к VseGPT ===
+// Запрос к VseGPT
 async function getAITarotReading(question, photoData, drawnCards = null) {
     const cardsInfo = drawnCards ? `
 Подруга хочет вытянуть карты сама, но карт у неё нет. Ты уже вытянула для неё ${drawnCards.length} карт. Вот что выпало:
@@ -202,7 +203,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
 ФОРМАТ ОТВЕТА:
 
 ## 🔮 Что я вижу
-(2-3 предложения. Начни непринуждённо, каждый раз по-разному.)
+(2-3 предложения. Пиши так, как будто ты только что перевернула карты и делишься первым впечатлением. НЕ используй шаблонные вступления.)
 
 ## 🃏 Карты
 
@@ -228,7 +229,9 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
 - Можно: «слушай», «честно говоря», «похоже»
 - Тепло, но без лишних слов
 - Без канцелярита
-- НЕ повторяй вступительные фразы
+- НИКОГДА не используй одинаковые вступительные фразы
+- Каждый раз придумывай новое начало
+- Пиши как живая подруга, а не робот
 
 Не упоминай, что ты ИИ.
 Отвечай на русском языке.`;
@@ -257,12 +260,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
         },
         body: JSON.stringify({
             model: 'openai/gpt-4o',
-            messages: [
-                {
-                    role: 'user',
-                    content: content
-                }
-            ],
+            messages: [{ role: 'user', content: content }],
             max_tokens: 2000,
             temperature: 0.9
         })
@@ -276,7 +274,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
     return data.choices[0].message.content;
 }
 
-// === История ===
+// Сохранение истории
 function saveToHistory(question, interpretation) {
     historyData.unshift({
         question: question || 'Вопрос не записан',
@@ -287,6 +285,7 @@ function saveToHistory(question, interpretation) {
     renderHistory();
 }
 
+// Отображение истории
 function renderHistory() {
     const historyEl = document.getElementById('history');
     if (historyData.length === 0) {
@@ -316,6 +315,7 @@ function renderHistory() {
     historyEl.innerHTML = html;
 }
 
+// Удалить один расклад
 function deleteHistoryItem(index) {
     if (confirm('Удалить этот расклад?')) {
         historyData.splice(index, 1);
@@ -324,6 +324,7 @@ function deleteHistoryItem(index) {
     }
 }
 
+// Очистить всю историю
 function clearHistory() {
     if (confirm('Удалить всю историю раскладов? Это действие нельзя отменить.')) {
         historyData = [];
@@ -332,6 +333,7 @@ function clearHistory() {
     }
 }
 
+// Показать расклад из истории
 function showHistoryItem(index) {
     const item = historyData[index];
     document.getElementById('resultText').innerHTML = marked.parse(item.interpretation);
@@ -339,7 +341,7 @@ function showHistoryItem(index) {
     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
 }
 
-// === PWA ===
+// PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
