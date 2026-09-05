@@ -4,6 +4,83 @@ let photoData = null;
 let historyData = JSON.parse(localStorage.getItem('tarotHistory') || '[]');
 let selectedCardCount = 1;
 
+// Колода Таро
+const tarotDeck = [
+    // Старшие Арканы
+    'Шут', 'Маг', 'Верховная Жрица', 'Императрица', 'Император',
+    'Иерофант', 'Влюблённые', 'Колесница', 'Сила', 'Отшельник',
+    'Колесо Фортуны', 'Справедливость', 'Повешенный', 'Смерть', 'Умеренность',
+    'Дьявол', 'Башня', 'Звезда', 'Луна', 'Солнце', 'Суд', 'Мир',
+    // Младшие Арканы — Жезлы
+    'Туз Жезлов', 'Двойка Жезлов', 'Тройка Жезлов', 'Четвёрка Жезлов', 'Пятёрка Жезлов',
+    'Шестёрка Жезлов', 'Семёрка Жезлов', 'Восьмёрка Жезлов', 'Девятка Жезлов', 'Десятка Жезлов',
+    'Паж Жезлов', 'Рыцарь Жезлов', 'Королева Жезлов', 'Король Жезлов',
+    // Младшие Арканы — Кубки
+    'Туз Кубков', 'Двойка Кубков', 'Тройка Кубков', 'Четвёрка Кубков', 'Пятёрка Кубков',
+    'Шестёрка Кубков', 'Семёрка Кубков', 'Восьмёрка Кубков', 'Девятка Кубков', 'Десятка Кубков',
+    'Паж Кубков', 'Рыцарь Кубков', 'Королева Кубков', 'Король Кубков',
+    // Младшие Арканы — Мечи
+    'Туз Мечей', 'Двойка Мечей', 'Тройка Мечей', 'Четвёрка Мечей', 'Пятёрка Мечей',
+    'Шестёрка Мечей', 'Семёрка Мечей', 'Восьмёрка Мечей', 'Девятка Мечей', 'Десятка Мечей',
+    'Паж Мечей', 'Рыцарь Мечей', 'Королева Мечей', 'Король Мечей',
+    // Младшие Арканы — Пентакли
+    'Туз Пентаклей', 'Двойка Пентаклей', 'Тройка Пентаклей', 'Четвёрка Пентаклей', 'Пятёрка Пентаклей',
+    'Шестёрка Пентаклей', 'Семёрка Пентаклей', 'Восьмёрка Пентаклей', 'Девятка Пентаклей', 'Десятка Пентаклей',
+    'Паж Пентаклей', 'Рыцарь Пентаклей', 'Королева Пентаклей', 'Король Пентаклей'
+];
+
+// Известные расклады
+const knownSpreads = {
+    'кельтский крест': 10,
+    'крест': 10,
+    'три карты': 3,
+    'прошлое настоящее будущее': 3,
+    'отношения': 5,
+    'любовный треугольник': 5,
+    'совет': 3,
+    'выбор': 5,
+    'год': 12,
+    'день': 1,
+    'неделя': 7,
+    'месяц': 3,
+    'финансы': 5,
+    'карта дня': 1
+};
+
+// Функция для определения количества карт
+function determineCardCount(question) {
+    if (photoData) return 0; // Если фото есть — карты уже вытянуты
+    
+    const lowerQuestion = question.toLowerCase();
+    
+    for (const [spreadName, cardCount] of Object.entries(knownSpreads)) {
+        if (lowerQuestion.includes(spreadName)) {
+            return cardCount;
+        }
+    }
+    
+    return selectedCardCount;
+}
+
+// Функция для вытягивания случайных карт
+function drawRandomCards(count) {
+    const drawnCards = [];
+    const deckCopy = [...tarotDeck];
+    
+    for (let i = 0; i < count; i++) {
+        const randomIndex = Math.floor(Math.random() * deckCopy.length);
+        const card = deckCopy.splice(randomIndex, 1)[0];
+        const isReversed = Math.random() < 0.5;
+        
+        drawnCards.push({
+            name: card,
+            position: isReversed ? 'перевёрнутая' : 'прямая'
+        });
+    }
+    
+    return drawnCards;
+}
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     renderHistory();
@@ -111,7 +188,9 @@ async function getInterpretation() {
 
     try {
         const relatedReadings = findRelatedReadings(question);
-        const interpretation = await getAITarotReading(question, photoData, relatedReadings);
+        const cardCount = determineCardCount(question);
+        const drawnCards = cardCount > 0 ? drawRandomCards(cardCount) : null;
+        const interpretation = await getAITarotReading(question, photoData, relatedReadings, drawnCards);
         document.getElementById('resultText').innerHTML = marked.parse(interpretation);
         loading.style.display = 'none';
         result.style.display = 'block';
@@ -126,7 +205,7 @@ async function getInterpretation() {
 }
 
 // === Запрос к VseGPT ===
-async function getAITarotReading(question, photoData, relatedReadings = []) {
+async function getAITarotReading(question, photoData, relatedReadings = [], drawnCards = null) {
     const contextInfo = relatedReadings.length > 0 ? `
 ПРОШЛЫЕ РАСКЛАДЫ:
 
@@ -139,6 +218,14 @@ ${r.date}:
 Ты помнишь эти разговоры. Если нынешний вопрос перекликается с прошлыми — отметь это как подруга: "Помнишь, мы уже говорили об этом..."
 ` : '';
 
+    const cardsInfo = drawnCards ? `
+Подруга хочет вытянуть карты сама, но карт у неё нет. Ты уже вытянула для неё ${drawnCards.length} карт. Вот что выпало (в порядке вытягивания):
+
+${drawnCards.map((card, index) => `${index + 1}. ${card.name} (${card.position})`).join('\n')}
+
+Растолкуй именно эти карты. Не придумывай другие. Учитывай их положение (прямое/перевёрнутое).
+` : '';
+
     const prompt = `Ты — близкая подруга, которая хорошо разбирается в Таро. Вы сидите вечером, болтаете, и она просит посмотреть её расклад.
 
 Ты общаешься легко, тепло, по-дружески. Без пафоса, без "пророчеств". Как будто вы вместе смотрите на карты и обсуждаете, что они хотят сказать.
@@ -147,7 +234,7 @@ ${r.date}:
 
 ${contextInfo}
 
-${photoData ? 'Она сфотографировала расклад. Посмотри внимательно на карты.' : `Своих карт у неё нет. Вытяни для неё ${selectedCardCount} карт из воображаемой колоды. Назови, какие карты выпали, и растолкуй их.`}
+${photoData ? 'Она сфотографировала расклад. Посмотри внимательно на карты.' : cardsInfo}
 
 ВАЖНО: Масти называй классически — КУБКИ, ЖЕЗЛЫ, МЕЧИ, ПЕНТАКЛИ.
 
@@ -165,10 +252,10 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
 
 ## 🃏 Карты
 
-**Название карты** — что она значит для тебя
+**Название карты (прямая/перевёрнутая)** — что она значит для тебя
 (1-2 предложения простыми словами)
 
-**Название карты** — что она значит для тебя
+**Название карты (прямая/перевёрнутая)** — что она значит для тебя
 (1-2 предложения простыми словами)
 
 ## 💫 Если собрать всё вместе
