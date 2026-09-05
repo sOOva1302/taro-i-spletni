@@ -1,7 +1,7 @@
 {
-    "name": "Таро AI",
-    "short_name": "Таро AI",
-    "description": "Профессиональный помощник таролога",
+    "name": "Таро и сплетни",
+    "short_name": "Таро и сплетни",
+    "description": "Карты знают — мы обсудим",
     "start_url": "/tarot-ai/",
     "display": "standalone",
     "background_color": "#0b0813",
