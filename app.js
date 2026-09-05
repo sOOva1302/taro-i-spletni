@@ -2,6 +2,7 @@ const VSEGPT_API_KEY = 'sk-or-vv-4ed1df7d0cc5ad2bfc3bc646367c3440b724e9d8d8b7d6d
 
 let photoData = null;
 let historyData = JSON.parse(localStorage.getItem('tarotHistory') || '[]');
+let selectedCardCount = 1;
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('galleryBtn').addEventListener('click', openGallery);
     document.getElementById('interpretBtn').addEventListener('click', getInterpretation);
 });
+
+// === Выбор количества карт ===
+function selectCardCount(count) {
+    selectedCardCount = count;
+    
+    document.querySelectorAll('.count-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    document.querySelector(`.count-btn[data-count="${count}"]`).classList.add('active');
+}
 
 // === Очистить поле вопроса ===
 function clearQuestion() {
@@ -135,7 +147,7 @@ ${r.date}:
 
 ${contextInfo}
 
-${photoData ? 'Она сфотографировала расклад. Посмотри внимательно на карты.' : 'Фото нет. Доверься интуиции и представь расклад.'}
+${photoData ? 'Она сфотографировала расклад. Посмотри внимательно на карты.' : `Своих карт у неё нет. Вытяни для неё ${selectedCardCount} карт из воображаемой колоды. Назови, какие карты выпали, и растолкуй их.`}
 
 ВАЖНО: Масти называй классически — КУБКИ, ЖЕЗЛЫ, МЕЧИ, ПЕНТАКЛИ.
 
