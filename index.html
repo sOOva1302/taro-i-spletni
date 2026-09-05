@@ -24,8 +24,11 @@
 
         <div class="section">
             <div class="section-label"><span class="num">1</span> Твой вопрос</div>
-            <textarea id="questionText" placeholder="Напиши свой вопрос или нажми на микрофон на клавиатуре..."></textarea>
-            <p class="hint">💬 Можно написать текстом или надиктовать голосом — нажми на микрофон 🎤 на клавиатуре</p>
+            <div class="question-wrapper">
+                <textarea id="questionText" placeholder="Напиши, что тебя волнует, или надиктуй голосом..."></textarea>
+                <button class="clear-question-btn" id="clearQuestionBtn" onclick="clearQuestion()">✕</button>
+            </div>
+            <p class="hint">💬 Можно написать текстом или нажать на микрофон 🎤 на клавиатуре</p>
         </div>
 
         <div class="section">
