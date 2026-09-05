@@ -208,10 +208,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
 ## 🃏 Карты
 
 **Название карты (прямая/перевёрнутая)** — что она значит для тебя
-(1-2 предложения)
-
-**Название карты (прямая/перевёрнутая)** — что она значит для тебя
-(1-2 предложения)
+(1 предложение на карту)
 
 ## 💫 Если собрать всё вместе
 (3-4 предложения)
@@ -250,6 +247,11 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
         text: prompt
     });
 
+    // Динамический max_tokens в зависимости от количества карт
+    const maxTokens = drawnCards 
+        ? Math.min(drawnCards.length * 200, 2000) 
+        : 800;
+
     const response = await fetch('https://api.vsegpt.ru/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -259,7 +261,7 @@ ${photoData ? 'Она сфотографировала расклад. Посм�
         body: JSON.stringify({
             model: 'openai/gpt-4o',
             messages: [{ role: 'user', content: content }],
-            max_tokens: 1500,
+            max_tokens: maxTokens,
             temperature: 0.9
         })
     });
