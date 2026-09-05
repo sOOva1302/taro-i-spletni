@@ -228,8 +228,8 @@ textarea:focus {
 
 .cards-count-selector {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
 }
 
 .count-btn {
@@ -238,7 +238,7 @@ textarea:focus {
     border-radius: 14px;
     padding: 14px 0;
     color: var(--text-muted);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
@@ -499,7 +499,11 @@ textarea:focus {
         gap: 8px;
     }
     .cards-count-selector {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+    }
+    .count-btn {
+        font-size: 12px;
+        padding: 12px 0;
     }
 }
